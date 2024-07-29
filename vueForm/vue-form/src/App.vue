@@ -92,14 +92,6 @@ export default {
   },
   methods: {
     updateWorkshops() {
-      if (!this.form.city) {
-        this.errors.city = 'Пожалуйста, выберите город.';
-        this.filteredWorkshops = {};
-        this.filteredEmployees = [];
-        this.form.workshop = '';
-        this.form.employee = '';
-        return;
-      }
       this.errors.city = '';
       this.filteredWorkshops = this.cities[this.form.city];
       this.form.workshop = '';
@@ -107,17 +99,6 @@ export default {
       this.filteredEmployees = [];
     },
     updateEmployees() {
-      if (!this.form.city) {
-        this.errors.city = 'Пожалуйста, выберите город.';
-        this.form.workshop = '';
-        this.filteredEmployees = [];
-        return;
-      }
-      if (!this.form.workshop) {
-        this.errors.workshop = 'Пожалуйста, выберите цех.';
-        this.filteredEmployees = [];
-        return;
-      }
       this.errors.city = '';
       this.errors.workshop = '';
       this.filteredEmployees = this.filteredWorkshops[this.form.workshop];
