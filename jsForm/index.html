@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Form</title>
+   <link rel="stylesheet" href="style.css">
+</head>
+<body>
+   <div class="form-container">
+      <h2>Выбор данных</h2>
+      <form>
+          <div id="alert" class="alert"></div>
+          <div class="form-group">
+              <label for="city">Город:</label>
+              <select id="city">
+                  <option value="">Выберите город</option>
+              </select>
+          </div>
+          <div class="form-group">
+              <label for="workshop">Цех:</label>
+              <select id="workshop">
+                  <option value="">Выберите цех</option>
+              </select>
+          </div>
+          <div class="form-group">
+              <label for="employee">Сотрудник:</label>
+              <select id="employee">
+                  <option value="">Выберите сотрудника</option>
+              </select>
+          </div>
+          <div class="form-group">
+              <label for="brigade">Бригада:</label>
+              <select id="brigade">
+                  <option value="Бригада 1">Бригада 1</option>
+                  <option value="Бригада 2">Бригада 2</option>
+              </select>
+          </div>
+          <div class="form-group">
+              <label for="shift">Смена:</label>
+              <select id="shift">
+                  <option value="Смена 1">Смена 1</option>
+                  <option value="Смена 2">Смена 2</option>
+              </select>
+          </div>
+          <button type="button" id="saveButton" class="btn">Сохранить</button>
+      </form>
+  </div>
+   <script src="script.js"></script>
+</body>
+</html>
