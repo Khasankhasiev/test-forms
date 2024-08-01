@@ -1,63 +1,77 @@
 <template>
   <div class="container">
-  <div class="form-container">
-    <h2>Выбор данных</h2>
-    <form @submit.prevent="saveData">
-      <div v-if="alertMessage" class="alert">{{ alertMessage }}</div>
+    <div class="form-container">
+      <h2>Выбор данных</h2>
+      <form @submit.prevent="saveData">
+        <div v-if="alertMessage" class="alert">{{ alertMessage }}</div>
 
-      <div class="form-group">
-        <label for="city">Город:</label>
-        <select id="city" v-model="form.city" @change="updateWorkshops">
-          <option value="">Выберите город</option>
-          <option v-for="(workshops, city) in cities" :key="city" :value="city">{{ city }}</option>
-        </select>
-        <div v-if="errors.city" class="alert">{{ errors.city }}</div>
-      </div>
+        <SelectInput
+          id="city"
+          label="Город"
+          :options="Object.keys(cities)"
+          placeholder="Выберите город"
+          :modelValue="form.city"
+          :errorMessage="errors.city"
+          @update:modelValue="form.city = $event"
+          @change="updateWorkshops"
+        />
 
-      <div class="form-group">
-        <label for="workshop">Цех:</label>
-        <select id="workshop" v-model="form.workshop" @change="updateEmployees" :disabled="!form.city">
-          <option value="">Выберите цех</option>
-          <option v-for="(employees, workshop) in filteredWorkshops" :key="workshop" :value="workshop">{{ workshop }}</option>
-        </select>
-        <div v-if="errors.workshop" class="alert">{{ errors.workshop }}</div>
-      </div>
+        <SelectInput
+          id="workshop"
+          label="Цех"
+          :options="Object.keys(filteredWorkshops)"
+          placeholder="Выберите цех"
+          :modelValue="form.workshop"
+          :errorMessage="errors.workshop"
+          :disabled="!form.city"
+          @update:modelValue="form.workshop = $event"
+          @change="updateEmployees"
+        />
 
-      <div class="form-group">
-        <label for="employee">Сотрудник:</label>
-        <select id="employee" v-model="form.employee" :disabled="!form.workshop">
-          <option value="">Выберите сотрудника</option>
-          <option v-for="employee in filteredEmployees" :key="employee" :value="employee">{{ employee }}</option>
-        </select>
-        <div v-if="errors.employee" class="alert">{{ errors.employee }}</div>
-      </div>
+        <SelectInput
+          id="employee"
+          label="Сотрудник"
+          :options="filteredEmployees"
+          placeholder="Выберите сотрудника"
+          :modelValue="form.employee"
+          :errorMessage="errors.employee"
+          :disabled="!form.workshop"
+          @update:modelValue="form.employee = $event"
+        />
 
-      <div class="form-group">
-        <label for="brigade">Бригада:</label>
-        <select id="brigade" v-model="form.brigade">
-          <option value="">Выберите бригаду</option>
-          <option v-for="brigade in brigades" :key="brigade" :value="brigade">{{ brigade }}</option>
-        </select>
-        <div v-if="errors.brigade" class="alert">{{ errors.brigade }}</div>
-      </div>
+        <SelectInput
+          id="brigade"
+          label="Бригада"
+          :options="brigades"
+          placeholder="Выберите бригаду"
+          :modelValue="form.brigade"
+          :errorMessage="errors.brigade"
+          @update:modelValue="form.brigade = $event"
+        />
 
-      <div class="form-group">
-        <label for="shift">Смена:</label>
-        <select id="shift" v-model="form.shift">
-          <option value="">Выберите смену</option>
-          <option v-for="shift in shifts" :key="shift" :value="shift">{{ shift }}</option>
-        </select>
-        <div v-if="errors.shift" class="alert">{{ errors.shift }}</div>
-      </div>
+        <SelectInput
+          id="shift"
+          label="Смена"
+          :options="shifts"
+          placeholder="Выберите смену"
+          :modelValue="form.shift"
+          :errorMessage="errors.shift"
+          @update:modelValue="form.shift = $event"
+        />
 
-      <button type="submit" class="btn">Сохранить</button>
-    </form>
+        <button type="submit" class="btn">Сохранить</button>
+      </form>
+    </div>
   </div>
-</div>
 </template>
 
 <script>
+import SelectInput from './SelectInput.vue';
+
 export default {
+  components: {
+    SelectInput
+  },
   data() {
     return {
       cities: {
@@ -87,11 +101,20 @@ export default {
         shift: ''
       },
       filteredWorkshops: {},
-      filteredEmployees: []
+      filteredEmployees: [],
+      alertMessage: ''
     };
   },
   methods: {
     updateWorkshops() {
+      if (!this.form.city) {
+        this.errors.city = 'Пожалуйста, выберите город.';
+        this.filteredWorkshops = {};
+        this.filteredEmployees = [];
+        this.form.workshop = '';
+        this.form.employee = '';
+        return;
+      }
       this.errors.city = '';
       this.filteredWorkshops = this.cities[this.form.city];
       this.form.workshop = '';
@@ -99,6 +122,17 @@ export default {
       this.filteredEmployees = [];
     },
     updateEmployees() {
+      if (!this.form.city) {
+        this.errors.city = 'Пожалуйста, выберите город.';
+        this.form.workshop = '';
+        this.filteredEmployees = [];
+        return;
+      }
+      if (!this.form.workshop) {
+        this.errors.workshop = 'Пожалуйста, выберите цех.';
+        this.filteredEmployees = [];
+        return;
+      }
       this.errors.city = '';
       this.errors.workshop = '';
       this.filteredEmployees = this.filteredWorkshops[this.form.workshop];
@@ -169,28 +203,7 @@ export default {
   text-align: center;
   color: #007BFF;
 }
-.form-group {
-  margin-bottom: 15px;
-}
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-.form-group select {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-.form-group select:focus {
-  border-color: #007BFF;
-}
-.alert {
-  color: red;
-  font-size: 14px;
-  margin-top: 5px;
-}
+
 .btn {
   display: block;
   width: 100%;
@@ -205,5 +218,11 @@ export default {
 }
 .btn:hover {
   background-color: #0056b3;
+}
+
+.alert {
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
 }
 </style>
